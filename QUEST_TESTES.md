@@ -1,0 +1,151 @@
+# Roteiro de testes no Meta Quest
+
+Abra **https://luctrevisan.github.io/mecmonitor/** no navegador do Quest (limpe o cache se a versão
+parecer antiga), toque em **Entrar em VR** e siga os passos. Anote ✅ / ❌ e, se algo falhar, uma frase
+sobre o que aconteceu. Isso basta para eu corrigir.
+
+O que já é verificado automaticamente (Quest 3 emulado, `npm run test:xr`): entrada e saída, pose
+inicial, andar, agachar, girar a cabeça, área de teleporte, alvos dos raios e reentrada. O roteiro
+abaixo confirma o que o emulador **não** consegue reproduzir (sensores reais, sensação de escala,
+estabilidade, mãos).
+
+## Fase 6 — Tracking WebXR
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 6.1 | Entrar em VR em pé, no centro da sala real | Você aparece **~1,5 m em frente à bancada**, de frente para ela, com a bomba e o quadro inteiros à vista | |
+| 6.2 | Olhar para o chão | Seus pés no piso do laboratório (nem flutuando, nem enterrado); a fita zebrada à frente | |
+| 6.3 | Comparar com a bancada | Escala realista: a bancada tem ~1,85 m de altura (um pouco acima dos olhos) | |
+| 6.4 | Dar 2–3 passos reais para a frente | Você se aproxima da bancada na mesma proporção, sem saltos | |
+| 6.5 | Agachar | A visão desce suavemente; dá para olhar a bomba de baixo | |
+| 6.6 | Girar a cabeça rápido para os lados | Sem tremor nem "arrasto" do cenário | |
+| 6.7 | Painel VR (P-01) | Aparece à **esquerda** da visão, ~75 cm, um pouco abaixo dos olhos, sem tapar a bancada; ao virar o corpo ele volta para o lado | |
+| 6.8 | Apontar o controle para a bomba | O raio **não seleciona peças do modelo** | |
+| 6.9 | Apontar o controle para o painel | O botão reage (hover) e o gatilho tira do VR | |
+| 6.10 | Teleporte (empurrar o thumbstick para a frente e mirar no chão) | Só aceita destinos **fora da fita zebrada**; mirar sobre a bancada não teleporta | |
+| 6.11 | Teleportar para trás da bancada (corredor junto à parede) | Funciona; você fica entre a bancada e a parede | |
+| 6.12 | Sair e entrar no VR de novo | Volta para a mesma posição inicial (6.1), sem recarregar a página | |
+| 6.13 | Ao sair do VR, olhar a tela 2D | A câmera do navegador volta ao enquadramento de antes | |
+
+Observação: a partir da Fase 8 os sensores respondem no VR (destaque e seleção). Os painéis de leitura
+(valor, estado, histórico) dentro do óculos entram na Fase 9.
+
+## Fase 7 — Hand tracking
+
+Pouse os controles na mesa (o Quest passa para as mãos) e depois pegue-os de novo.
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 7.1 | Soltar os controles | Em 1–2 s aparecem **dois pontinhos claros** nas pontas do polegar e do indicador de cada mão; nenhuma "mão de videogame" | |
+| 7.2 | Esconder uma mão atrás das costas | Os pontinhos dela somem; a outra mão continua normal | |
+| 7.3 | Pegar os controles de novo | Os pontinhos somem e os raios dos controles voltam, sem recarregar | |
+
+## Fase 8 — Apontar, pinçar e interação direta
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 8.1 | Com controles: mirar o raio em **VIB-01** (topo do mancal) | Aparece uma **esfera translúcida branca** em volta do sensor (destaque) | |
+| 8.2 | Puxar o gatilho | A esfera fica **azul** (selecionado), a peça brilha e o controle **vibra** curto | |
+| 8.3 | Mirar com o controle **esquerdo** e puxar o gatilho | Funciona de primeira (cada controle tem o próprio raio) | |
+| 8.4 | Com as mãos: mão aberta apontando para o sensor | Raio fino e discreto saindo da mão; ao passar sobre o sensor, fica azul e a esfera branca aparece | |
+| 8.5 | Fazer a **pinça** (polegar + indicador) | Seleciona **uma vez**; o cursor pisca. Segurar a pinça não seleciona de novo | |
+| 8.6 | Mão aberta parada, sem pinçar, por 10 s | **Nada** é selecionado sozinho | |
+| 8.7 | Aproximar a ponta do indicador do sensor (sem raio) | O raio some e o sensor fica destacado (interação direta) | |
+| 8.8 | Encostar e pinçar no sensor | Seleciona (mesmo com o dedo se mexendo ao fechar a pinça) | |
+| 8.9 | Passar a mão "atravessando" o painel ou o sensor sem pinçar | Nada é ativado | |
+| 8.10 | Painel "Sair da imersão": olhar à **esquerda**, um pouco abaixo | O painel fica ao lado (não na frente da bancada) | |
+| 8.11 | Apontar a mão para "Sair da imersão" e pinçar | Sai do VR | |
+| 8.12 | Raio da mão tremendo? | O raio deve ficar estável com a mão parada e acompanhar sem atraso perceptível ao mover | |
+
+## Fase 9 — Painéis e menu VR
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 9.1 | Ao entrar, olhar à **esquerda**, um pouco abaixo | Painel **P-01 · BOMBA CENTRÍFUGA** com estado, origem (SIMULAÇÃO), TEMPERATURA, VIBRAÇÃO, CORRENTE e RPM; a bancada continua livre à frente | |
+| 9.2 | Comparar os valores do painel com o dashboard (sair e olhar no navegador, se preciso) | Mesmos valores e estados | |
+| 9.3 | Ler o painel a ~75 cm | Texto nítido e legível sem se aproximar | |
+| 9.4 | Menu: **SENSORES / RAIO-X / TÉRMICO / TREINAMENTO** | Aparecem como "em breve" e **não** reagem ao gatilho nem à pinça | |
+| 9.5 | Selecionar **VIB-01** (controle ou pinça) | Surge um painel do sensor **acima** dele, virado para você: VIB-01, valor, estado, tendência, histórico em barras | |
+| 9.6 | Andar em volta da bancada com o painel do sensor aberto | O painel continua acima do sensor e sempre virado para você | |
+| 9.7 | Apontar para o **×** do painel do sensor e pinçar (ou gatilho) | O painel fecha e o sensor deixa de estar selecionado | |
+| 9.8 | Andar ~1 m e acionar **Recentrar** | Volta para a posição inicial, de frente para a bancada | |
+| 9.9 | Acionar **Fixar painel** e girar o corpo | O painel fica parado no lugar; o botão passa a dizer "Seguir olhar" | |
+| 9.10 | Acionar **Seguir olhar** | O painel volta a acompanhar, à esquerda da visão | |
+| 9.11 | Passar a mão atravessando os botões sem pinçar | Nada é acionado | |
+
+## Fase 10 — Modos de visualização
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 10.1 | No painel VR, acionar **SENSORES** | Um cartão acima de cada sensor (VIB-01, T-01, RPM-01, I-01) com valor e estado, e um anel na cor do estado; os cartões não se sobrepõem | |
+| 10.2 | Apontar para o cartão do T-01 e pinçar (ou gatilho) | Seleciona o T-01, como tocar no próprio sensor | |
+| 10.3 | Acionar **RAIO-X** | Voluta, tampa, caixa do mancal e proteção do acoplamento ficam translúcidas; rotor, eixo, mancais, acoplamento e motor continuam sólidos, com nomes | |
+| 10.4 | Andar em volta da bancada no RAIO-X | Os nomes ficam legíveis e virados para você | |
+| 10.5 | Acionar **TÉRMICO** | Só a caixa do mancal ganha cor (mais quente junto ao T-01); o resto da bomba fica cinza; legenda com valor, nível e "SIMULAÇÃO" acima da bancada | |
+| 10.6 | Acionar **NORMAL** | Tudo volta às cores originais (bomba e tubos verdes), sem cartões nem legenda | |
+| 10.7 | Trocar de modo várias vezes, rápido | Nada fica "preso" (transparência ou cor de um modo anterior) | |
+| 10.8 | Desempenho no RAIO-X e no TÉRMICO | Sem quedas visíveis de fluidez em relação ao NORMAL | |
+
+## Fase 11 — Modo treinamento
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 11.1 | No painel VR (esquerda), acionar **TREINAMENTO** | Abre um painel à **direita** com "Iniciar cenário aleatório" e "Instrutor: cenário A–D"; o painel principal continua à esquerda | |
+| 11.2 | Pinçar "Iniciar cenário aleatório" | Painel "TREINAMENTO · CENÁRIO x", etapa 1/7 INSPEÇÃO; no painel principal a origem continua "◐ SIMULAÇÃO" | |
+| 11.3 | Marcar os 3 itens da inspeção e "Próximo" | "Próximo" só fica ativo com os 3 itens marcados | |
+| 11.4 | LOCALIZAÇÃO: apontar e pinçar T-01, VIB-01 e I-01 na bancada | Cada sensor encontrado vira ✓; "Próximo" só ativa com os três | |
+| 11.5 | LEITURA: aguardar ~1 min, conferir os valores (cartões, modos) e "Registrar leituras" | As leituras aparecem no painel | |
+| 11.6 | Responder anomalia, diagnóstico e ação | Nenhuma resposta é corrigida antes do FEEDBACK | |
+| 11.7 | FEEDBACK | Pontuação, nome do cenário, indício compatível e ação recomendada; "Repetir", "Outro cenário", "Encerrar" | |
+| 11.8 | "Encerrar" | Volta aos dados normais (simulação ou ESP32) e o selo de treinamento some | |
+| 11.9 | Ler os textos do painel de treinamento a ~75 cm | Legíveis sem se aproximar | |
+
+## Fase 12 — Desempenho
+
+Abra **https://luctrevisan.github.io/mecmonitor/?perf=1**. O FPS aparece no topo da página e numa linha
+pequena embaixo do botão "Sair da imersão" no painel VR.
+
+| # | Passo | Esperado | Resultado (anote o FPS) |
+|---|---|---|---|
+| 12.1 | Entrar em VR e olhar para a bancada em NORMAL, parado | ≥ 72 FPS estável | |
+| 12.2 | Girar a cabeça e andar em volta da bancada | Sem engasgos perceptíveis | |
+| 12.3 | RAIO-X e TÉRMICO | FPS semelhante ao NORMAL | |
+| 12.4 | Usar as mãos (pinça) por ~1 min | FPS semelhante | |
+| 12.5 | Comparar: entrar com `?perf=1&foveation=0` (sem foveação) | Anote a diferença de FPS e se as bordas da imagem ficam mais nítidas | |
+| 12.6 | Ler o painel VR olhando de lado (só com os olhos) com a foveação padrão | O texto continua legível | |
+
+## Fase 13 — Roteiro completo (item 33) e casos extras
+
+Execute as seções das Fases 6 a 12 acima. Elas cobrem entrada e saída, controles, mãos, pinça, apontar,
+interação direta, troca controle ↔ mão, seleção de T-01, VIB-01 e I-01, Raio-X, Térmico, Treinamento,
+teleporte, telemetria e desempenho. Depois faça os casos abaixo, que o emulador não reproduz, e anote o
+resumo no `QA_REPORT.md` (seção 9).
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 13.1 | Segurar **só um controle** (o outro na mesa) e usar a mão livre | O controle aponta com raio; a mão livre mostra os pontinhos e pinça; sem dois ponteiros na mesma mão | |
+| 13.2 | Com as mãos, cobrir uma mão com a outra ou sair do campo das câmeras por 2–3 s e voltar | A mão some e volta sozinha; nada é selecionado sem querer ao voltar | |
+| 13.3 | Usar as **duas mãos** ao mesmo tempo (uma aponta para o painel, a outra para um sensor) | Cada mão tem o próprio raio e destaque; pinçar com uma não aciona o alvo da outra | |
+| 13.4 | Fazer o fluxo completo do item 36 sem ajuda: entrar → achar P-01 e M-01 → localizar sensores → pinçar VIB-01 → ler o painel → RAIO-X → TÉRMICO → treinamento (cenário aleatório) até o FEEDBACK | Possível sem instruções extras; anotar o tempo e onde houve dúvida | |
+| 13.5 | Se o ESP32 estiver na rede: abrir com `?source=ws&url=ws://<ip-do-esp32>:81` | Header "● DADOS REAIS" e "ESP32 ● ONLINE"; valores do painel VR iguais aos do sensor | |
+
+## Fase 14 — Realidade aumentada (RA)
+
+A bancada em **tamanho real** no ambiente de verdade. Funciona no **Meta Quest 3** (passthrough colorido)
+e em **celulares Android com Chrome e ARCore**. **iPhone/iPad não têm WebXR no Safari**, então o botão
+fica desabilitado com o motivo. O emulador (`npm run test:xr`) não tem um ambiente real: o hit-test em
+superfícies reais só pode ser conferido no aparelho.
+
+| # | Passo | Esperado | Resultado |
+|---|---|---|---|
+| 14.1 | Quest 3: tocar em **Entrar em RA** | A sala real aparece (passthrough); a bancada, as placas e o quadro elétrico aparecem; paredes, piso e móveis da oficina virtual não | |
+| 14.2 | Olhar para o chão livre | O anel azul e o contorno da bancada seguem o chão real; a seta do contorno aponta para você; dica "Gatilho, pinça ou toque: posicionar" | |
+| 14.3 | Apertar o gatilho (ou pinçar) | A bancada aparece apoiada no chão, de frente para você, onde estava o contorno; o painel de controle vem para a sua frente | |
+| 14.4 | Andar em volta da bancada | A bancada fica parada no lugar do chão onde foi posicionada (não "anda" junto) | |
+| 14.5 | Painel → **Reposicionar** e depois gatilho em outro lugar | O contorno volta; o próprio clique em "Reposicionar" não move a bancada; o segundo clique move | |
+| 14.6 | Selecionar VIB-01, RAIO-X, TÉRMICO e o treinamento na RA | Iguais ao VR | |
+| 14.7 | **Sair da imersão** e depois **Entrar em VR** | O VR é o de sempre: oficina, piso, teleporte e posição inicial | |
+| 14.8 | Android (Chrome, ARCore): tocar em **Entrar em RA** e mover o celular devagar sobre o chão | Barra embaixo com a instrução, **Reposicionar** e **Sair da RA**; o anel aparece no chão | |
+| 14.9 | Android: tocar na imagem da câmera | A bancada é posicionada no anel; tocar nos botões da barra não posiciona | |
+| 14.10 | Android: tocar em um sensor da bancada | O sensor é selecionado (a bancada não se move) | |
+| 14.11 | iPhone (Safari) | Botão **Entrar em RA** desabilitado (o motivo está na dica do botão; mostrá-lo também ao toque é a Fase 6 de UX, P9) | |
